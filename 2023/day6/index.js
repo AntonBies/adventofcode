@@ -1,6 +1,16 @@
 const fs = require("fs");
 const path = require("path");
 
+const integersBetweenRoots = (time, dist) => {
+    const x1 = (-1 * time + Math.sqrt(time ** 2 - 4 * dist)) / -2;
+    const x2 = (-1 * time - Math.sqrt(time ** 2 - 4 * dist)) / -2;
+    const xArr = [x1,x2].sort((a,b) => a - b);
+
+    return Math.ceil(xArr[1]) - Math.floor(xArr[0]) - 1;
+}
+
+const joinInput = (arr) => Number(arr.join(""));
+
 const [raceTimes, raceRecords] = fs
     .readFileSync(path.resolve(__dirname,"input.txt"), { encoding: "utf-8" })
     .trim()
@@ -10,23 +20,28 @@ const [raceTimes, raceRecords] = fs
         return numbers.split(" ").filter(Boolean).map(Number);
     });
 
-const margin = raceTimes.reduce((acc, cur, i) => {
-    const distances = [];
-    for (let speed = 1; speed < cur; speed++) {
-        const movingTime = cur - speed;
-        distances.push(speed * movingTime);
-    }
-    return acc * distances.filter(item => item > raceRecords[i]).length;
-}, 1);
+const part1 = raceTimes.reduce((acc, cur, i) => acc * integersBetweenRoots(cur, raceRecords[i]), 1);
+const part2 = integersBetweenRoots(joinInput(raceTimes), joinInput(raceRecords));
+console.log(part1);
+console.log(part2);
 
-const raceTime = Number(raceTimes.join(""));
-const raceRecord = Number(raceRecords.join(""));
+// const margin = raceTimes.reduce((acc, cur, i) => {
+//     const distances = [];
+//     for (let speed = 1; speed < cur; speed++) {
+//         const movingTime = cur - speed;
+//         distances.push(speed * movingTime);
+//     }
+//     return acc * distances.filter(item => item > raceRecords[i]).length;
+// }, 1);
 
-const distances = [];
-for (let speed = 1; speed < raceTime; speed++) {
-    const movingTime = raceTime - speed;
-    distances.push(speed * movingTime);
-}
+// const raceTime = Number(raceTimes.join(""));
+// const raceRecord = Number(raceRecords.join(""));
 
-console.log(margin);
-console.log(distances.filter(item => item > raceRecord).length);
+// const distances = [];
+// for (let speed = 1; speed < raceTime; speed++) {
+//     const movingTime = raceTime - speed;
+//     distances.push(speed * movingTime);
+// }
+
+// console.log(margin);
+// console.log(distances.filter(item => item > raceRecord).length);
