@@ -1,55 +1,57 @@
 const fs = require("fs");
 const path = require("path");
 
+class PartNumber {
+    constructor(number, coordinates) {
+        this.number = number;
+        this.coordinates = coordinates;
+        this.adjacentSymbols = [];
+    }
+}
+
+class PartSymbol {
+    constructor(symbol, i, j) {
+        this.symbol = symbol;
+        this.coordinate = `${i}-${j}`;
+        this.adjacent = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].map(([di,dj]) => `${i+di}-${j+dj}`);
+        this.adjacentNumbers = [];
+    }
+}
+
 const data = fs
     .readFileSync(path.resolve(__dirname,"input.txt"), { encoding: "utf-8" })
     .trim()
     .split("\n");
 
-const getAdjacentCells = (([i,j]) => [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].map(([di,dj]) => `${i+di}-${j+dj}`));
+const rowLen = data[0].length;
+const colLen = data.length;
+const numbers = [];
+const symbols = [];
 
-const getNumbersAndSymbols = (input) => {
-    const rowLen = input[0].length;
-    const colLen = input.length;
-    const numbers = [];
-    const symbols = [];
-
-    for (let i = 0; i < rowLen; i++) {
-        for (let j = 0; j < colLen; j++) {
-            const cur = input[i][j];
-            if (cur.match(/[^\d.]/)) {
-                const adj = getAdjacentCells([i,j]);
-                symbols.push({symbol: cur, coordinate: `${i}-${j}`, adjacentCells: adj});
-                continue;
-            }
-            if (isNaN(cur)) continue;
-            let n = cur;
-            const c = [`${i}-${j}`];
-            while (++j < colLen) {
-                if (isNaN(input[i][j])) break;
-                n += input[i][j];
-                c.push(`${i}-${j}`)
-            }
-            --j;
-            numbers.push({number: n, coordinates: c});
+for (let i = 0; i < rowLen; i++) {
+    for (let j = 0; j < colLen; j++) {
+        const cur = data[i][j];
+        if (cur.match(/[^\d.]/)) {
+            symbols.push(new PartSymbol(cur, i, j));
+            continue;
         }
+        if (isNaN(cur)) continue;
+        let n = cur;
+        const c = [`${i}-${j}`];
+        while (++j < colLen) {
+            if (isNaN(data[i][j])) break;
+            n += data[i][j];
+            c.push(`${i}-${j}`)
+        }
+        --j;
+        numbers.push(new PartNumber(n, c));
     }
-    return {numbers, symbols};
-}
-
-const {numbers, symbols } = getNumbersAndSymbols(data);
-for (const num of numbers) {
-    num["adjacentSymbols"] = [];
-}
-for (const sym of symbols) {
-    sym["adjacentNumbers"] = [];
 }
 
 const partone = numbers.reduce((acc, cur) => {
     const adjSymbols = symbols.filter(sym => {
-        const coorArr = sym.adjacentCells.concat(cur.coordinates);
-        const coorSet = new Set(coorArr);
-        const isAdjacent = coorSet.size < coorArr.length;
+        const coorSet = new Set(sym.adjacent.concat(cur.coordinates));
+        const isAdjacent = coorSet.size < sym.adjacent.length + cur.coordinates.length;
         if (isAdjacent) {
             sym.adjacentNumbers.push(cur);
         }
