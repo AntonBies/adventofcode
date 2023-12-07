@@ -6,7 +6,7 @@ const data = fs
     .trim()
     .split("\n");
 
-const getAdjecentCells = (([i,j]) => [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].map(([di,dj]) => `${i+di}-${j+dj}`));
+const getAdjacentCells = (([i,j]) => [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].map(([di,dj]) => `${i+di}-${j+dj}`));
 
 const getNumbersAndSymbols = (input) => {
     const rowLen = input[0].length;
@@ -18,7 +18,7 @@ const getNumbersAndSymbols = (input) => {
         for (let j = 0; j < colLen; j++) {
             const cur = input[i][j];
             if (cur.match(/[^\d.]/)) {
-                const adj = getAdjecentCells([i,j]);
+                const adj = getAdjacentCells([i,j]);
                 symbols.push({symbol: cur, coordinate: `${i}-${j}`, adjacentCells: adj});
                 continue;
             }
