@@ -4,9 +4,9 @@ const path = require("path");
 const integersBetweenRoots = (time, dist) => {
     const x1 = (-1 * time + Math.sqrt(time ** 2 - 4 * dist)) / -2;
     const x2 = (-1 * time - Math.sqrt(time ** 2 - 4 * dist)) / -2;
-    const xArr = [x1,x2].sort((a,b) => a - b);
+    const [min, max] = [Math.floor(Math.min(x1, x2)), Math.ceil(Math.max(x1,x2))];
 
-    return Math.ceil(xArr[1]) - Math.floor(xArr[0]) - 1;
+    return max - min - 1;
 }
 
 const joinInput = (arr) => Number(arr.join(""));
