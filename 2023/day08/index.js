@@ -23,11 +23,10 @@ const input = fs
         const map = cur.split("\n").reduce((acc, cur) => {
             const [key, values] = cur.split(" = ").map(str => str.trim());
             const [L, R] = values.replace(/[()]/g, '').split(", ");
-            acc[key] = {L, R};
-            return acc;
+            return {...acc, [key]: {L,R}}
         }, {});
-        acc.map = map;
-        return acc;
+        
+        return {...acc, map};
     }, {});
 
 function partone(data) {
