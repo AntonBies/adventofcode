@@ -11,7 +11,7 @@ const data = fs
 const partone = (input) => {
     return input.reduce((acc, cur) => {
         if (cur.includes("()")) return acc;
-        const [a, b] = cur.slice(4, -1).split(",").map(Number);
+        const [a, b] = cur.match(/\d{1,3}/g).map(Number);
         return acc + multiply(a, b);
     }, 0);
 };
@@ -24,7 +24,7 @@ const parttwo = (input) => {
                 return acc;
             }
             if (!acc.do) return acc;
-            const [a, b] = cur.slice(4, -1).split(",").map(Number);
+            const [a, b] = cur.match(/\d{1,3}/g).map(Number);
             acc.sum += multiply(a, b);
             return acc;
         },
